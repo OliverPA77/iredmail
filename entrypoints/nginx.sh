@@ -52,4 +52,31 @@ for conf in $(ls ${CONF_AVAILABLE_DIR}/*.conf); do
     ln -sf ${CONF_AVAILABLE_DIR}/${f} ${CONF_ENABLED_DIR}/${f}
 done
 
+case "${SERVER_SIZE}" in
+	'XS')
+		NGINX_PROCESSES=1
+		NGINX_CONNECTIONS=64
+		;;
+	'S')
+		NGINX_PROCESSES=1
+		NGINX_CONNECTIONS=512
+		;;
+	'M')
+		NGINX_PROCESSES=2
+		NGINX_CONNECTIONS=1024
+		;;
+	'L')
+		NGINX_PROCESSES=auto
+		NGINX_CONNECTIONS=8192
+		;;
+	*)
+		[ X"${NGINX_PROCESSES}" == X'' ] && NGINX_PROCESSES=2
+		[ X"${NGINX_CONNECTIONS}" == X'' ] && NGINX_CONNECTIONS=1024
+		;;
+esac
+sed -i -E \
+	-e "s/worker_processes .*;/worker_processes ${NGINX_PROCESSES};/g" \
+	-e "s/worker_connections .*;/worker_connections ${NGINX_CONNECTIONS};/g;" \
+	/etc/nginx/nginx.conf
+
 [[ X"${USE_IREDADMIN}" == X'YES' ]] || rm -f ${CONF_ENABLED_DIR}/iredadmin.conf
