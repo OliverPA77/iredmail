@@ -154,3 +154,7 @@ if [ -f ${POSTFIX_CUSTOM_CONF_MASTER_CF} ]; then
     mv ${POSTFIX_CONF_MASTER_CF}{,.bak}
     ln -sf ${POSTFIX_CUSTOM_CONF_MASTER_CF} ${POSTFIX_CONF_MASTER_CF}
 fi
+if [ -f ${POSTFIX_CUSTOM_CONF_DIR}/custom.sh ]; then
+    LOG "Found and use custom config script: ${POSTFIX_CUSTOM_CONF_DIR}/custom.sh."
+	bash ${POSTFIX_CUSTOM_CONF_DIR}/custom.sh
+fi
